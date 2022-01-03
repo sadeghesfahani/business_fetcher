@@ -8,15 +8,17 @@ services:
       context: .
       dockerfile: ./compose/production/postgres/Dockerfile
     image: alcatech_seo_toolkit_production_postgres
-    container_name: postgres
+    container_name: business_fetcher_database
     volumes:
       - local_postgres_data:/var/lib/postgresql/data:Z
     env_file:
       - ./.envs/.local/.postgres
+    ports:
+      - 5432:5432
 
   pgadmin:
     image: dpage/pgadmin4
-    container_name: pgadmin
+    container_name: business_fetcher_pgadmin
     depends_on:
       - postgres
     env_file:
