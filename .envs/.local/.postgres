@@ -1,0 +1,13 @@
+# PostgreSQL
+# ------------------------------------------------------------------------------
+POSTGRES_HOST=postgres
+POSTGRES_PORT=5432
+POSTGRES_DB=business_fetcher
+POSTGRES_USER=admin
+POSTGRES_PASSWORD=admin
+
+# PgAdmin
+# ------------------------------------------------------------------------------
+PGADMIN_LISTEN_PORT=5050
+PGADMIN_DEFAULT_EMAIL=sadeghesfahani.sina@gmail.com
+PGADMIN_DEFAULT_PASSWORD=sadeghesfahani.sina@gmail.com

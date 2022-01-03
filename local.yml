@@ -1,0 +1,28 @@
+version: '3.4'
+
+
+
+services:
+  postgres:
+    build:
+      context: .
+      dockerfile: ./compose/production/postgres/Dockerfile
+    image: alcatech_seo_toolkit_production_postgres
+    container_name: postgres
+    volumes:
+      - local_postgres_data:/var/lib/postgresql/data:Z
+    env_file:
+      - ./.envs/.local/.postgres
+
+  pgadmin:
+    image: dpage/pgadmin4
+    container_name: pgadmin
+    depends_on:
+      - postgres
+    env_file:
+      - ./.envs/.local/.postgres
+    ports:
+      - "5050:5050"
+
+volumes:
+  local_postgres_data: {}
