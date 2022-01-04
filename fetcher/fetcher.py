@@ -18,8 +18,14 @@ class Fetcher(fetcher_base.FetcherBase):
             next_url = links['next']['href']
 
     def _analyze_company(self, html_handler):
-        html_handler = self._purge_html_page(html_handler)
+        body = self._get_the_body(html_handler)
+        header_data = body.contents[1].find("div", {"class": "card"}).find("div", {"class": "h2 text-primary mb-2"}).text
+        name = header_data.split("(")[0].strip()
+        registery_code = header_data.split("(")[1].strip()[:-1]
+        info = body.contents[1].find("div", {"class": "card-group row"}).findAll('div')
+        print(info[0])
 
+        exit()
     def fetch_by_name(self, name):
         pass
 

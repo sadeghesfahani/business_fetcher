@@ -33,3 +33,7 @@ class FetcherBase:
     def _purge_html_page(html_handler_object):
         [x.extract() for x in html_handler_object.findAll('script')]
         return html_handler_object
+
+
+    def _get_the_body(self,html_handler_object):
+        return html_handler_object.find("div", {"class": "ar__center__bg"})
