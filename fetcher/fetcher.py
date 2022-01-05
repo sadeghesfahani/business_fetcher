@@ -26,12 +26,29 @@ class Fetcher(fetcher_base.FetcherBase):
         registery_code = header_data.split("(")[1].strip()[:-1]
         info = body.contents[1].find("div", {"class": "card-group row"}).findAll('div')
         left_information = info[0].findAll("div", {"class": "card-body card-body-shrinking"})
+
+        # general information
         general_information = left_information[0]
         status = self._extract_info(general_information, "div", "Status")
         legal_form = self._extract_info(general_information, "div", "Legal form")
         registered = self._extract_info(general_information, "div", "Registered")
         financial_year = self._extract_info(general_information, "div", "Period of the financial year")
-        print(financial_year)
+
+        # tax information
+        print(self._base_url + "/eng/company/" + registery_code + "/emta_tax_debt_json")
+        tax_information = BeautifulSoup(self._fetch_json(self._base_url + "/eng/company/" + registery_code + "/emta_tax_debt_json")['data']['html'], "html.parser")
+        vat_number = self._extract_info(tax_information, "div", "VAT number")
+        vat_period = self._extract_info(tax_information, "div", "VAT period")
+        state_taxes = self._extract_info(tax_information, "div", "State taxes")
+        taxes_on_workforce = self._extract_info(tax_information, "div", "Taxes on workforce")
+        taxable_turnover = self._extract_info(tax_information, "div", "Taxable turnover")
+        number_of_employees = self._extract_info(tax_information, "div", "Number of employees")
+        print(number_of_employees)
+
+
+
+
+        # print(financial_year)
 
         exit()
 

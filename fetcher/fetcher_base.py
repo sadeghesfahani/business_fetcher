@@ -26,9 +26,15 @@ class FetcherBase:
         return links
 
     def _fetch_page(self, url):
+        print(url)
         response = requests.get(url)
         return response.text
 
+
+    def _fetch_json(self,url):
+        response = requests.get(url)
+        # print(response.__dict__)
+        return response.json()
     @staticmethod
     def _purge_html_page(html_handler_object):
         [x.extract() for x in html_handler_object.findAll('script')]
