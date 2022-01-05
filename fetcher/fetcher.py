@@ -25,6 +25,7 @@ class Fetcher(fetcher_base.FetcherBase):
         name = header_data.split("(")[0].strip()
         registery_code = header_data.split("(")[1].strip()[:-1]
         info = body.contents[1].find("div", {"class": "card-group row"}).findAll('div')
+
         left_information = info[0].findAll("div", {"class": "card-body card-body-shrinking"})
 
         # general information
@@ -35,26 +36,34 @@ class Fetcher(fetcher_base.FetcherBase):
         financial_year = self._extract_info(general_information, "div", "Period of the financial year")
 
         # tax information
-        print(self._base_url + "/eng/company/" + registery_code + "/emta_tax_debt_json")
-        tax_information = BeautifulSoup(self._fetch_json(self._base_url + "/eng/company/" + registery_code + "/emta_tax_debt_json")['data']['html'], "html.parser")
+        tax_information = BeautifulSoup(self._fetch_json(self._base_url + "/eng/company/" + registery_code + "/emta_tax_debt_json")['data']['html'],
+                                        "html.parser")
         vat_number = self._extract_info(tax_information, "div", "VAT number")
         vat_period = self._extract_info(tax_information, "div", "VAT period")
         state_taxes = self._extract_info(tax_information, "div", "State taxes")
         taxes_on_workforce = self._extract_info(tax_information, "div", "Taxes on workforce")
         taxable_turnover = self._extract_info(tax_information, "div", "Taxable turnover")
         number_of_employees = self._extract_info(tax_information, "div", "Number of employees")
-        print(number_of_employees)
 
-
-
-
+        # right part of the page
+        right_information = body.contents[1].find("div", {"class": "card-group row"}).findAll("div", {"class": "card col-md-6"})[1].findAll("div", {
+            "class": "card-body card-body-shrinking"})
+        for x in right_information:
+            if self._does_exist(x, "div", "Right of representation"):
+                representations = list()
+                table = x.find('table')
+                for tr in table.findAll('tr'):
+                    tds = tr.findAll('td')
+                    if len(tds) > 0:
+                        person = dict()
+                        person['name'] = tds[0].text.strip()
+                        person['id'] = tds[1].text.strip()
+                        person['role'] = tds[2].text.strip()
+                        representations.append(person)
+                print(representations)
         # print(financial_year)
 
         exit()
-
-    def _extract_info(self, html_handler, tag_type, info):
-        info_tag = html_handler.find(tag_type, text=re.compile(info))
-        return info_tag.find_next_sibling(tag_type).text.strip()
 
     def fetch_by_name(self, name):
         pass
