@@ -1,3 +1,5 @@
+import re
+
 import fetcher_base
 from bs4 import BeautifulSoup
 import requests
@@ -23,9 +25,18 @@ class Fetcher(fetcher_base.FetcherBase):
         name = header_data.split("(")[0].strip()
         registery_code = header_data.split("(")[1].strip()[:-1]
         info = body.contents[1].find("div", {"class": "card-group row"}).findAll('div')
-        print(info[0])
+        left_information = info[0].findAll("div", {"class": "card-body card-body-shrinking"})
+        general_information = left_information[0]
+        status = self._extract_info(general_information, "div", "Status")
+
+        print(status)
 
         exit()
+
+    def _extract_info(self, html_handler, tag_type, info):
+        info_tag = html_handler.find(tag_type, text=re.compile(info))
+        return info_tag.find_next_sibling(tag_type).text.strip()
+
     def fetch_by_name(self, name):
         pass
 
