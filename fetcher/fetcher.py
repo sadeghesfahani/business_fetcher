@@ -28,8 +28,10 @@ class Fetcher(fetcher_base.FetcherBase):
         left_information = info[0].findAll("div", {"class": "card-body card-body-shrinking"})
         general_information = left_information[0]
         status = self._extract_info(general_information, "div", "Status")
-
-        print(status)
+        legal_form = self._extract_info(general_information, "div", "Legal form")
+        registered = self._extract_info(general_information, "div", "Registered")
+        financial_year = self._extract_info(general_information, "div", "Period of the financial year")
+        print(financial_year)
 
         exit()
 
