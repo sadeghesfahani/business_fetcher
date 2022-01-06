@@ -38,6 +38,7 @@ class Fetcher(fetcher_base.FetcherBase):
         # tax information
         tax_information = BeautifulSoup(self._fetch_json(self._base_url + "/eng/company/" + registery_code + "/emta_tax_debt_json")['data']['html'],
                                         "html.parser")
+
         vat_number = self._extract_info(tax_information, "div", "VAT number")
         vat_period = self._extract_info(tax_information, "div", "VAT period")
         state_taxes = self._extract_info(tax_information, "div", "State taxes")
@@ -52,15 +53,45 @@ class Fetcher(fetcher_base.FetcherBase):
             if self._does_exist(x, "div", "Right of representation"):
                 representations = list()
                 table = x.find('table')
-                for tr in table.findAll('tr'):
-                    tds = tr.findAll('td')
-                    if len(tds) > 0:
-                        person = dict()
-                        person['name'] = tds[0].text.strip()
-                        person['id'] = tds[1].text.strip()
-                        person['role'] = tds[2].text.strip()
-                        representations.append(person)
-                print(representations)
+                try:
+                    for tr in table.findAll('tr'):
+                        tds = tr.findAll('td')
+                        if len(tds) > 0:
+                            person = dict()
+                            person['name'] = tds[0].text.strip()
+                            person['id'] = tds[1].text.strip()
+                            person['role'] = tds[2].text.strip()
+                            representations.append(person)
+                except:
+                    pass
+                # print(representations)
+
+            # area of activity
+            if self._does_exist(x, "div", "Areas of activity"):
+                area_of_activities = list()
+
+                table = x.find('table')
+                try:
+                    for tr in table.findAll('tr', {"class": "hidden_areasActivity_info"}):
+                        td = tr.findAll('td')
+                        area_of_activity = dict()
+                        area_of_activity['area'] = self._extract_info(td[0], "div", "Area of activity")
+                        area_of_activity['EMTAK'] = self._extract_info(td[0], "div", "EMTAK code")
+                        area_of_activity['NACE'] = self._extract_info(td[0], "div", "NACE code")
+                        area_of_activity['Source'] = self._extract_info(td[0], "div", "Source")
+                        area_of_activities.append(area_of_activity)
+
+                        # for div in tr.findAll("div"):
+                        #     print(div)
+                except:
+                    pass
+
+            # others
+
+        # email data
+        email_information = BeautifulSoup(self._fetch_json(self._base_url + "/eng/company/" + registery_code + "/tab/registry_card")['data']['html'],
+                                          "html.parser")
+
         # print(financial_year)
 
         exit()
