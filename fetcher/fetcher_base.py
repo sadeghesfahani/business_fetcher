@@ -52,7 +52,7 @@ class FetcherBase:
         try:
             return info_tag.find_next_sibling(tag_type).text.strip()
         except:
-            return None
+            return ""
 
     def _does_exist(self, html_handler, tag_type, info):
         # print(info)
