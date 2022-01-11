@@ -26,5 +26,23 @@ services:
     ports:
       - "5050:5050"
 
+
+  redis:
+    image: redis:5.0
+    container_name: buisiness_redis
+
+  celery:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    env_file:
+      - ./.envs/.local/.django
+    depends_on:
+      - redis
+    volumes:
+      - ./:/django_app
+    container_name: celery
+
+
 volumes:
-  local_postgres_data: {}
+  local_postgres_data: { }

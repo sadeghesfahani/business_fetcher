@@ -1,3 +1,4 @@
+import time
 from datetime import timedelta
 
 from django.utils import timezone
@@ -10,6 +11,7 @@ class Proxy:
         self.interval = 20
         self.fail_limit = 10
         self.allowed_eccentricity = 10
+        self.sleep_time = 10
 
     def _initial_proxy_dictionary(self):
         for proxy in self.proxy_pool:
@@ -19,7 +21,11 @@ class Proxy:
         pass
 
     def get_proxy(self):
-        pass
+        for proxy in self.proxy_dictionary.keys():
+            if self._is_proxy_available(proxy):
+                return proxy
+        time.sleep(self.sleep_time)
+        return self.get_proxy()
 
     def _is_proxy_available(self, proxy):
         if timezone.now() - self.proxy_dictionary[proxy]["last_user"] > timedelta(seconds=self.interval):
