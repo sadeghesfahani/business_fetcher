@@ -11,19 +11,26 @@ class Fetcher(fetcher_base.FetcherBase):
     def fetch_all(self):
         next_url = self._url
         companies = list()
-        while next_url is not None:
-            print("page changes\n\n\n")
-            html_handler = BeautifulSoup(self._fetch_page(next_url), 'html.parser')
-            html_handler = self._purge_html_page(html_handler)
-            links = self._extract_links(html_handler)
+        self.all_links = list()
+        with open("company_links.txt", 'a', encoding='utf-8') as file:
+            while next_url is not None:
+                print("page changes\n\n\n")
+                html_handler = BeautifulSoup(self._fetch_page(next_url), 'html.parser')
+                html_handler = self._purge_html_page(html_handler)
+                links = self._extract_links(html_handler)
+                self.all_links += links['company']
 
-            for company in links['company']:
-                company_html_handler = BeautifulSoup(self._fetch_page(self._convert_to_absolute(company['href'])), 'html.parser')
-                companies.append(self._analyze_company(company_html_handler))
-            next_url = self._base_url + links['next']['href']
-
-            with open("companies.txt", "w") as file:
-                json.dump(companies, file, indent= 4)
+                # for company in links['company']:
+                #     company_html_handler = BeautifulSoup(self._fetch_page(self._convert_to_absolute(company['href'])), 'html.parser')
+                #     companies.append(self._analyze_company(company_html_handler))
+                next_url = self._base_url + links['next']['href']
+                print(next_url)
+                # print(links)
+                for link in links['company']:
+                    file.write(f"{link['href']}\n")
+            #
+            # with open("companies.txt", "w") as file:
+            #     json.dump(companies, file, indent= 4)
 
     def _analyze_company(self, html_handler):
         business_information = dict()

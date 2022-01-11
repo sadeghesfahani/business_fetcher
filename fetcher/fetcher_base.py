@@ -5,7 +5,7 @@ import requests
 
 class FetcherBase:
     def __init__(self):
-        self._url = "https://ariregister.rik.ee/eng/company_search_result/078ae5d"
+        self._url = "https://ariregister.rik.ee/eng/company_search_result/4bec816?name_or_code=%2Aa%2Aa%2Aa"
         self._base_url = "https://ariregister.rik.ee"
 
     def set_url(self, url):
