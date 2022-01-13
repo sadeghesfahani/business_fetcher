@@ -4,13 +4,13 @@ from django.db import models
 # Create your models here.
 class Business(models.Model):
     name = models.CharField(max_length=150)
-    registry_code = models.IntegerField()
-    legal_form = models.CharField(max_length=150)
-    status = models.CharField(max_length=150)
-    registered_date = models.DateField()
-    financial_year = models.CharField(max_length=150)
-    other = models.JSONField()
-
+    registry_code = models.IntegerField(blank=True,null=True)
+    legal_form = models.CharField(max_length=150,blank=True,null=True)
+    status = models.CharField(max_length=150,blank=True,null=True)
+    registered_date = models.DateField(blank=True,null=True)
+    financial_year = models.CharField(max_length=150,blank=True,null=True)
+    other = models.JSONField(blank=True,null=True)
+    url = models.CharField(max_length=1600)
 
 class Person(models.Model):
     business = models.ForeignKey(Business, on_delete=models.CASCADE)
