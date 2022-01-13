@@ -1,12 +1,12 @@
 import json
 import re
 
-import fetcher_base
+from fetcher.fetcher_base import FetcherBase
 from bs4 import BeautifulSoup
 import requests
 
 
-class Fetcher(fetcher_base.FetcherBase):
+class Fetcher(FetcherBase):
 
     def fetch_all(self):
         next_url = self._url
@@ -148,5 +148,3 @@ class Fetcher(fetcher_base.FetcherBase):
         pass
 
 
-new = Fetcher()
-new.fetch_all()

@@ -37,6 +37,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'fetcher.apps.FetcherConfig',
     "django_celery_beat",
+    'rest_framework'
 ]
 
 MIDDLEWARE = [
