@@ -10,7 +10,7 @@ class Business(models.Model):
     registered_date = models.DateField(blank=True,null=True)
     financial_year = models.CharField(max_length=150,blank=True,null=True)
     other = models.JSONField(blank=True,null=True)
-    url = models.CharField(max_length=1600)
+    url = models.CharField(max_length=1600, unique=True)
 
 class Person(models.Model):
     business = models.ForeignKey(Business, on_delete=models.CASCADE)
@@ -27,3 +27,5 @@ class Activity(models.Model):
     source = models.CharField(max_length=250)
 
 
+class Page(models.Model):
+    page = models.SmallIntegerField()

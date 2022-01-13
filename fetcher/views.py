@@ -8,17 +8,17 @@ from fetcher.models import Business
 
 class BusinessFetcher(viewsets.ViewSet):
 
-    def fetch(self,request):
-        return Response({"hi":"hi"})
+    def fetch(self, request):
+        return Response({"hi": "hi"})
 
-
-    def fetch_business_url(self):
+    def fetch_business_url(self,request):
         fetcher = Fetcher()
         fetcher.fetch_business_urls()
 
-    def convert_text_to_database(self,request):
+
+    def convert_text_to_database(self, request):
         print("hi")
-        with open('fetcher/company_links.txt' , 'r', encoding='utf-8') as file:
+        with open('fetcher/company_links.txt', 'r', encoding='utf-8') as file:
             for company in file.readlines():
                 company_name = company.split("/")[-1].split("?")[0]
                 base_url = "https://ariregister.rik.ee/"
@@ -28,6 +28,9 @@ class BusinessFetcher(viewsets.ViewSet):
                 # print(type(url_list))
                 url_list = "/".join(url_list)
                 business_url = base_url + url_list
-                print(business_url)
+                try:
+                    Business.objects.create(url=business_url)
+                except:
+                    pass
                 # Business.objects.create()
-        return Response({"hi":"hi"})
+        return Response({"hi": "hi"})

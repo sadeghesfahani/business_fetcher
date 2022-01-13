@@ -5,6 +5,8 @@ from fetcher.fetcher_base import FetcherBase
 from bs4 import BeautifulSoup
 import requests
 
+from fetcher.models import Page, Business
+
 
 class Fetcher(FetcherBase):
 
@@ -32,24 +34,43 @@ class Fetcher(FetcherBase):
             # with open("companies.txt", "w") as file:
             #     json.dump(companies, file, indent= 4)
 
-
     def fetch_business_urls(self):
-        next_url = "https://ariregister.rik.ee/eng/company_search_result/4bec816?name_or_code=%2Aa%2Aa%2Aa&page=3008"
+        page = Page.objects.all().first()
+        next_url = f"https://ariregister.rik.ee/eng/company_search_result/eca033f?name_or_code=%2Aa%2Aa%2Aa&page={page.page}"
+        print(next_url)
         companies = list()
         self.all_links = list()
-        with open("company_links.txt", 'a', encoding='utf-8') as file:
-            while next_url is not None:
-                print("page changes\n\n\n")
-                html_handler = BeautifulSoup(self._fetch_page(next_url), 'html.parser')
-                html_handler = self._purge_html_page(html_handler)
-                links = self._extract_links(html_handler)
-                self.all_links += links['company']
-                next_url = self._base_url + links['next']['href']
-                print(next_url)
-                for link in links['company']:
-                    file.write(f"{link['href']}\n")
+        html_handler = BeautifulSoup(self._fetch_page(next_url), 'html.parser')
+        html_handler = self._purge_html_page(html_handler)
+        links = self._extract_links(html_handler)
+        self.all_links += links['company']
+        next_url = self._base_url + links['next']['href']
+        print(next_url)
+        for link in links['company']:
+
+            try:
+                company_name = link['href'].split("/")[-1].split("?")[0]
+            except:
+                # celery beat off
+                pass
+
+            url_list = link['href'].split("/")[1:-1]
+            url_list.append(company_name)
+            url_list = "/".join(url_list)
+            business_url = self._base_url + "/" + url_list
+            try:
+                Business.objects.create(url=business_url)
+            except:
+                # business already exists in database
+                pass
 
 
+        page.page += 1
+        page.save()
+
+        # try:
+        #     Business.objects.create(url=self._base_url + link['href'] )
+        # file.write(f"{link['href']}\n")
 
     def _analyze_company(self, html_handler):
         business_information = dict()
@@ -146,5 +167,3 @@ class Fetcher(FetcherBase):
 
     def fetch_by_name(self, name):
         pass
-
-
