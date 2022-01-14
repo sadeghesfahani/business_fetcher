@@ -5,7 +5,7 @@ from fetcher.fetcher_base import FetcherBase
 from bs4 import BeautifulSoup
 import requests
 
-from fetcher.models import Page, Business, Person
+from fetcher.models import Page, Business, Person, Activity
 
 
 class Fetcher(FetcherBase):
@@ -100,28 +100,21 @@ class Fetcher(FetcherBase):
         page.page += 1
         page.save()
 
-        # try:
-        #     Business.objects.create(url=self._base_url + link['href'] )
-        # file.write(f"{link['href']}\n")
-
-    def fet_company(self, url):
+    def fetch_company(self, url):
         html_handler = BeautifulSoup(self._fetch_page(url), 'html.parser')
         html_handler = self._purge_html_page(html_handler)
         self._analyze_company(html_handler, url)
 
     def _analyze_company(self, html_handler, url):
         business = Business.objects.get(url=url)
-        business_information = dict()
+        business.in_process = True
         body = self._get_the_body(html_handler)
         header_data = body.contents[1].find("div", {"class": "card"}).find("div", {"class": "h2 text-primary mb-2"}).text
         name = header_data.split("(")[0].strip()
         registery_code = header_data.split("(")[1].strip()[:-1]
-        # business_information['name'] = name
-        # business_information['registry'] = registery_code
         business.name = name
         business.registry_code = registery_code
         info = body.contents[1].find("div", {"class": "card-group row"}).findAll('div')
-
         left_information = info[0].findAll("div", {"class": "card-body card-body-shrinking"})
 
         # general information
@@ -130,16 +123,14 @@ class Fetcher(FetcherBase):
         legal_form = self._extract_info(general_information, "div", "Legal form")
         registered = self._extract_info(general_information, "div", "Registered")
         financial_year = self._extract_info(general_information, "div", "Period of the financial year")
-
-        # business_information['info'] = {"status": status, "legal_form": legal_form, "registered": registered, "financial_year": financial_year}
         business.status = status
         business.legal_form = legal_form
         business.registered_date = registered
         business.financial_year = financial_year
+
         # tax information
         tax_information = BeautifulSoup(self._fetch_json(self._base_url + "/eng/company/" + registery_code + "/emta_tax_debt_json")['data']['html'],
                                         "html.parser")
-
         vat_number = self._extract_info(tax_information, "div", "VAT number").replace("\xa0", " ")
         vat_period = self._extract_info(tax_information, "div", "VAT period").replace("\xa0", " ")
         state_taxes = self._extract_info(tax_information, "div", "State taxes").replace("\xa0", " ")
@@ -147,22 +138,18 @@ class Fetcher(FetcherBase):
         taxable_turnover = self._extract_info(tax_information, "div", "Taxable turnover").replace("\xa0", " ")
         number_of_employees = self._extract_info(tax_information, "div", "Number of employees").replace("\xa0", " ")
 
-        # business_information['tax'] = {"vat_number": vat_number, "vat_period": vat_period, "state_taxes": state_taxes,
-        #                                "taxes_on_workforce": taxes_on_workforce, "taxable_turnover": taxable_turnover,
-        #                                "number_of_employees": number_of_employees}
-
         business.vat_number = vat_number
         business.vat_period = vat_period
         business.state_taxes = state_taxes
         business.taxes_on_workforce = taxes_on_workforce
         business.taxable_turnover = taxable_turnover
         business.number_of_employees = number_of_employees
+
         # right part of the page
         right_information = body.contents[1].find("div", {"class": "card-group row"}).findAll("div", {"class": "card col-md-6"})[1].findAll("div", {
             "class": "card-body card-body-shrinking"})
         for x in right_information:
             if self._does_exist(x, "div", "Right of representation"):
-                representations = list()
                 table = x.find('table')
                 try:
                     for tr in table.findAll('tr'):
@@ -170,35 +157,26 @@ class Fetcher(FetcherBase):
                         if len(tds) > 0:
                             Person.objects.create(business=business, name=tds[0].text.strip(), person_id=tds[1].text.strip(),
                                                   role=tds[2].text.strip())
-
-
                 except:
                     pass
-                # business_information['right_of_presentation'] = representations
 
             # area of activity
             if self._does_exist(x, "div", "Areas of activity"):
-                area_of_activities = list()
-
                 table = x.find('table')
                 try:
                     for tr in table.findAll('tr', {"class": "hidden_areasActivity_info"}):
                         td = tr.findAll('td')
                         area_of_activity = dict()
+
                         area_of_activity['area'] = self._extract_info(td[0], "div", "Area of activity")
                         area_of_activity['EMTAK'] = self._extract_info(td[0], "div", "EMTAK code")
                         area_of_activity['NACE'] = self._extract_info(td[0], "div", "NACE code")
                         area_of_activity['Source'] = self._extract_info(td[0], "div", "Source").replace("\n", " ").replace(
                             "                                     ", " ")
-                        area_of_activities.append(area_of_activity)
-
-                    business_information['area_of_activity'] = area_of_activities
-                    # for div in tr.findAll("div"):
-                    #     print(div)
+                        Activity.objects.create(business=business, area=area_of_activity['area'], EMTAK_code=area_of_activity['EMTAK'],
+                                                NACE_code=area_of_activity['NACE'], source=area_of_activity['Source'])
                 except:
                     pass
-
-            # others
 
         # email data
 
@@ -206,11 +184,13 @@ class Fetcher(FetcherBase):
                                           "html.parser")
         email_list = re.findall(r'[\w.+-]+@[\w-]+\.[\w.-]+', str(email_information.contents))
         try:
-            business_information['email'] = email_list[0]
+            business.email = email_list[0]
         except:
             pass
-        # print(financial_year)
-        return business_information
+        business.in_process = False
+        business.complete = True
+        business.save()
+        return True
 
     def fetch_by_name(self, name):
         pass

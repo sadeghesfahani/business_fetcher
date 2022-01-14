@@ -19,7 +19,7 @@ class Business(models.Model):
     taxes_on_workforce = models.CharField(max_length=120, blank=True, null=True)
     taxable_turnover = models.CharField(max_length=210, blank=True, null=True)
     number_of_employees = models.SmallIntegerField(blank=True, null=True)
-
+    email = models.CharField(max_length=250,blank=True, null=True)
 
 class Person(models.Model):
     business = models.ForeignKey(Business, on_delete=models.CASCADE)
@@ -30,11 +30,11 @@ class Person(models.Model):
 
 class Activity(models.Model):
     business = models.ForeignKey(Business, on_delete=models.CASCADE)
-    type = models.CharField(max_length=150)
-    area = models.CharField(max_length=250)
-    EMTAK_code = models.CharField(max_length=250)
-    NACE_code = models.CharField(max_length=250)
-    source = models.CharField(max_length=250)
+    type = models.CharField(max_length=150, blank=True, null=True)
+    area = models.CharField(max_length=250, blank=True, null=True)
+    EMTAK_code = models.CharField(max_length=250, blank=True, null=True)
+    NACE_code = models.CharField(max_length=250, blank=True, null=True)
+    source = models.CharField(max_length=250, blank=True, null=True)
 
 
 class Page(models.Model):

@@ -10,7 +10,10 @@ class Proxy:
         self.proxy = ProxyModel
 
     def get(self):
-        proxy = self.proxy.objects.all().order_by('-last_used_date').first()
-        proxy.last_used_date = timezone.now()
-        proxy.save()
-        return proxy.proxy
+        try:
+            proxy = self.proxy.objects.all().order_by('-last_used_date').first()
+            proxy.last_used_date = timezone.now()
+            proxy.save()
+            return proxy.proxy
+        except:
+            return False

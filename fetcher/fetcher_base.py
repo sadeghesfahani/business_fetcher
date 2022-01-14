@@ -2,6 +2,8 @@ import re
 
 import requests
 
+from fetcher.porxy import Proxy
+
 
 class FetcherBase:
     def __init__(self):
@@ -28,12 +30,27 @@ class FetcherBase:
         return links
 
     def _fetch_page(self, url):
-        response = requests.get(url)
+        proxy = Proxy().get()
+        if not proxy:
+            proxy_dict = {
+                "http": proxy,
+                "https": proxy,
+            }
+            response = requests.get(url, proxies=proxy_dict)
+        else:
+            response = requests.get(url)
         return response.text
 
     def _fetch_json(self, url):
-        response = requests.get(url)
-        # print(response.__dict__)
+        proxy = Proxy().get()
+        if not proxy:
+            proxy_dict = {
+                "http": proxy,
+                "https": proxy,
+            }
+            response = requests.get(url, proxies=proxy_dict)
+        else:
+            response = requests.get(url)
         return response.json()
 
     @staticmethod
