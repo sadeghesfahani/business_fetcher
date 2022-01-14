@@ -143,3 +143,5 @@ DATABASES = {
     }
 
 }
+
+JOBSPERTASK = 8

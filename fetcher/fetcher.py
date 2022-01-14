@@ -5,7 +5,7 @@ from fetcher.fetcher_base import FetcherBase
 from bs4 import BeautifulSoup
 import requests
 
-from fetcher.models import Page, Business
+from fetcher.models import Page, Business, Person
 
 
 class Fetcher(FetcherBase):
@@ -33,6 +33,39 @@ class Fetcher(FetcherBase):
             #
             # with open("companies.txt", "w") as file:
             #     json.dump(companies, file, indent= 4)
+
+    def fetch_business_url(self):
+        page = Page.objects.all().first()
+        next_url = f"https://ariregister.rik.ee/eng/company_search_result/eca033f?name_or_code=%2Aa%2Aa%2Aa&page={page.page}"
+        page.page += 1
+        page.save()
+        self.all_links = list()
+        html_handler = BeautifulSoup(self._fetch_page(next_url), 'html.parser')
+        html_handler = self._purge_html_page(html_handler)
+        links = self._extract_links(html_handler)
+        self.all_links += links['company']
+        next_url = self._base_url + links['next']['href']
+        for link in links['company']:
+
+            try:
+                company_name = link['href'].split("/")[-1].split("?")[0]
+            except:
+                # celery beat off
+                pass
+
+            url_list = link['href'].split("/")[1:-1]
+            url_list.append(company_name)
+            url_list = "/".join(url_list)
+            business_url = self._base_url + "/" + url_list
+            try:
+                Business.objects.create(url=business_url)
+            except:
+                # business already exists in database
+                pass
+        if next_url is None:
+            page_object = Page.objects.all().first()
+            page_object.finished = True
+            page_object.save()
 
     def fetch_business_urls(self):
         page = Page.objects.all().first()
@@ -64,7 +97,6 @@ class Fetcher(FetcherBase):
                 # business already exists in database
                 pass
 
-
         page.page += 1
         page.save()
 
@@ -72,14 +104,22 @@ class Fetcher(FetcherBase):
         #     Business.objects.create(url=self._base_url + link['href'] )
         # file.write(f"{link['href']}\n")
 
-    def _analyze_company(self, html_handler):
+    def fet_company(self, url):
+        html_handler = BeautifulSoup(self._fetch_page(url), 'html.parser')
+        html_handler = self._purge_html_page(html_handler)
+        self._analyze_company(html_handler, url)
+
+    def _analyze_company(self, html_handler, url):
+        business = Business.objects.get(url=url)
         business_information = dict()
         body = self._get_the_body(html_handler)
         header_data = body.contents[1].find("div", {"class": "card"}).find("div", {"class": "h2 text-primary mb-2"}).text
         name = header_data.split("(")[0].strip()
         registery_code = header_data.split("(")[1].strip()[:-1]
-        business_information['name'] = name
-        business_information['registry'] = registery_code
+        # business_information['name'] = name
+        # business_information['registry'] = registery_code
+        business.name = name
+        business.registry_code = registery_code
         info = body.contents[1].find("div", {"class": "card-group row"}).findAll('div')
 
         left_information = info[0].findAll("div", {"class": "card-body card-body-shrinking"})
@@ -91,8 +131,11 @@ class Fetcher(FetcherBase):
         registered = self._extract_info(general_information, "div", "Registered")
         financial_year = self._extract_info(general_information, "div", "Period of the financial year")
 
-        business_information['info'] = {"status": status, "legal_form": legal_form, "registered": registered, "financial_year": financial_year}
-
+        # business_information['info'] = {"status": status, "legal_form": legal_form, "registered": registered, "financial_year": financial_year}
+        business.status = status
+        business.legal_form = legal_form
+        business.registered_date = registered
+        business.financial_year = financial_year
         # tax information
         tax_information = BeautifulSoup(self._fetch_json(self._base_url + "/eng/company/" + registery_code + "/emta_tax_debt_json")['data']['html'],
                                         "html.parser")
@@ -104,10 +147,16 @@ class Fetcher(FetcherBase):
         taxable_turnover = self._extract_info(tax_information, "div", "Taxable turnover").replace("\xa0", " ")
         number_of_employees = self._extract_info(tax_information, "div", "Number of employees").replace("\xa0", " ")
 
-        business_information['tax'] = {"vat_number": vat_number, "vat_period": vat_period, "state_taxes": state_taxes,
-                                       "taxes_on_workforce": taxes_on_workforce, "taxable_turnover": taxable_turnover,
-                                       "number_of_employees": number_of_employees}
+        # business_information['tax'] = {"vat_number": vat_number, "vat_period": vat_period, "state_taxes": state_taxes,
+        #                                "taxes_on_workforce": taxes_on_workforce, "taxable_turnover": taxable_turnover,
+        #                                "number_of_employees": number_of_employees}
 
+        business.vat_number = vat_number
+        business.vat_period = vat_period
+        business.state_taxes = state_taxes
+        business.taxes_on_workforce = taxes_on_workforce
+        business.taxable_turnover = taxable_turnover
+        business.number_of_employees = number_of_employees
         # right part of the page
         right_information = body.contents[1].find("div", {"class": "card-group row"}).findAll("div", {"class": "card col-md-6"})[1].findAll("div", {
             "class": "card-body card-body-shrinking"})
@@ -119,15 +168,13 @@ class Fetcher(FetcherBase):
                     for tr in table.findAll('tr'):
                         tds = tr.findAll('td')
                         if len(tds) > 0:
-                            person = dict()
-                            person['name'] = tds[0].text.strip()
-                            person['id'] = tds[1].text.strip()
-                            person['role'] = tds[2].text.strip()
-                            representations.append(person)
+                            Person.objects.create(business=business, name=tds[0].text.strip(), person_id=tds[1].text.strip(),
+                                                  role=tds[2].text.strip())
+
 
                 except:
                     pass
-                business_information['right_of_presentation'] = representations
+                # business_information['right_of_presentation'] = representations
 
             # area of activity
             if self._does_exist(x, "div", "Areas of activity"):
