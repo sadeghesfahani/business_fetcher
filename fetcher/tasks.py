@@ -1,10 +1,24 @@
+import django
 from business_fetcher import celery_app
-from fetcher.models import Page
+from business_fetcher.celery_app import app
+from .fetcher import Fetcher
+from .models import Page
+from .task_pool import ActiveTasks
+from celery import shared_task
+
+@shared_task
+def run():
+    tasks = ActiveTasks().get_tasks()
+    for task in tasks:
+        if task[1] is None:
+            task[0].delay()
+        else:
+            task[0].delay(task[1])
 
 
-@celery_app.task()
-def get_business_links():
-    page = Page.objects.all().first().page
 
 
 
+@app.task(bind=True)
+def fetch_urlsdfsaf():
+    Fetcher().fetch_business_url()

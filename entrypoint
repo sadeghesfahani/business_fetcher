@@ -43,5 +43,5 @@ done
 >&2 echo 'PostgreSQL is available'
 
 export MSYS=nonativeinnerlinks
-watchgod celery.__main__.main --args -A business_fetcher.celery_app worker -l INFO && rm -f './celerybeat.pid' && celery -A config.celery_app beat -l INFO
+watchgod celery.__main__.main --args -A fetcher.tasks worker -l INFO && rm -f './celerybeat.pid' && celery -A config.celery_app beat -l INFO
 
