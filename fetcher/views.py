@@ -1,11 +1,10 @@
 import copy
-from django_celery_beat.models import PeriodicTask, IntervalSchedule
 from django.views.generic import TemplateView
 from rest_framework import viewsets
 from rest_framework.response import Response
 from fetcher.fetcher import Fetcher
 from fetcher.models import Business
-from fetcher.serializers import PeriodicTaskSerializer
+
 from .tasks import run
 
 class BusinessFetcher(viewsets.ViewSet):
@@ -37,14 +36,14 @@ class BusinessFetcher(viewsets.ViewSet):
                 # Business.objects.create()
         return Response({"hi": "hi"})
 
-    def start(self,request):
+    # def start(self,request):
         # interval = IntervalSchedule.objects.all().first()
 
         # task = PeriodicTask.objects.get_or_create(task='fetcher.tasks.run',interval=interval)
 
         # return Response(PeriodicTaskSerializer(task[0],many=False).data)
-        task = PeriodicTask.objects.all().first()
-        return Response(PeriodicTaskSerializer(task, many=False).data)
+        # task = PeriodicTask.objects.all().first()
+        # return Response(PeriodicTaskSerializer(task, many=False).data)
 
 class StartView(TemplateView):
     template_name = 'fetcher/index.html'

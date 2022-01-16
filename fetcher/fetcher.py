@@ -36,7 +36,7 @@ class Fetcher(FetcherBase):
 
     def fetch_business_url(self):
         page = Page.objects.all().first()
-        next_url = f"https://ariregister.rik.ee/eng/company_search_result/eca033f?name_or_code=%2Aa%2Aa%2Aa&page={page.page}"
+        next_url = f"https://ariregister.rik.ee/eng/company_search_result/d82c2f2?name_or_code=%2Aa%2Aa%2Aa&page={page.page}"
         page.page += 1
         page.save()
         self.all_links = list()

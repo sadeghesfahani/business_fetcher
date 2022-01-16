@@ -10,11 +10,12 @@ from celery import shared_task
 def run():
 
     tasks = ActiveTasks().get_tasks()
-    print(tasks)
+    print("task in run is:" , tasks)
     for task in tasks:
         if task[1] is None:
             task[0].delay()
         else:
+            print("before delaying it the task is ," , task)
             task[0].delay(task[1])
 
 

@@ -3,8 +3,11 @@ from fetcher.fetcher import Fetcher
 
 
 @celery_app.task(bind=True)
-def fetch_business(url):
-    Fetcher().fetch_company(url)
+def fetch_business(url,*args,**kwargs):
+    print("===================> args are: ",args)
+    print("===================> url is: ",url)
+    print("===================> kwargs are: ",kwargs)
+    Fetcher().fetch_company(args[0])
 
 
 @celery_app.task()

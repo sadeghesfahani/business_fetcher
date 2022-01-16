@@ -47,6 +47,8 @@ export MSYS=nonativeinnerlinks
 #start beat
 #dir
 #bash ./celery.sh && bash ./beat.sh
+
+python3 manage.py migrate
 python3 manage.py runserver 0.0.0.0:8000
 # rm -f './celerybeat.pid' ; celery -A config.celery_app beat -l INFO
 

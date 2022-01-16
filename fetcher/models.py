@@ -3,11 +3,11 @@ from django.db import models
 
 # Create your models here.
 class Business(models.Model):
-    name = models.CharField(max_length=150)
-    registry_code = models.IntegerField(blank=True, null=True)
+    name = models.CharField(max_length=150, blank=True, null=True)
+    registry_code = models.CharField(max_length=150, blank=True, null=True)
     legal_form = models.CharField(max_length=150, blank=True, null=True)
     status = models.CharField(max_length=150, blank=True, null=True)
-    registered_date = models.DateField(blank=True, null=True)
+    registered_date = models.CharField(max_length=150, blank=True, null=True)
     financial_year = models.CharField(max_length=150, blank=True, null=True)
     other = models.JSONField(blank=True, null=True)
     url = models.CharField(max_length=1600, unique=True)
@@ -18,8 +18,9 @@ class Business(models.Model):
     state_taxes = models.CharField(max_length=120, blank=True, null=True)
     taxes_on_workforce = models.CharField(max_length=120, blank=True, null=True)
     taxable_turnover = models.CharField(max_length=210, blank=True, null=True)
-    number_of_employees = models.SmallIntegerField(blank=True, null=True)
-    email = models.CharField(max_length=250,blank=True, null=True)
+    number_of_employees = models.CharField(max_length=3, blank=True, null=True)
+    email = models.CharField(max_length=250, blank=True, null=True)
+
 
 class Person(models.Model):
     business = models.ForeignKey(Business, on_delete=models.CASCADE)

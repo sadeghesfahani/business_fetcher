@@ -31,7 +31,9 @@ class FetcherBase:
 
     def _fetch_page(self, url):
         proxy = Proxy().get()
-        if not proxy:
+        print("proxy ==============================> ", proxy)
+        print("url ==============================> ", url)
+        if proxy:
             proxy_dict = {
                 "http": proxy,
                 "https": proxy,
@@ -42,8 +44,9 @@ class FetcherBase:
         return response.text
 
     def _fetch_json(self, url):
+
         proxy = Proxy().get()
-        if not proxy:
+        if proxy:
             proxy_dict = {
                 "http": proxy,
                 "https": proxy,
