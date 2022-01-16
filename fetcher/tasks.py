@@ -18,7 +18,3 @@ def run():
 
 
 
-
-@app.task(bind=True)
-def fetch_urlsdfsaf():
-    Fetcher().fetch_business_url()

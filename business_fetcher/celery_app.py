@@ -16,7 +16,7 @@ app = Celery("business_fetcher")
 app.config_from_object("django.conf:settings", namespace="CELERY")
 
 # Load task modules from all registered Django app configs.
-app.autodiscover_tasks(lambda: settings.INSTALLED_APPS,force=True)
+app.autodiscover_tasks()
 
 @app.task()
 def debug_task():

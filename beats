@@ -47,6 +47,8 @@ export MSYS=nonativeinnerlinks
 #start beat
 #dir
 #bash ./celery.sh && bash ./beat.sh
-watchgod celery.__main__.main --args -A fetcher.tasks worker -l INFO
-# rm -f './celerybeat.pid' ; celery -A config.celery_app beat -l INFO
+#watchgod celery.__main__.main --args -A fetcher.tasks worker -l INFO
+echo "beats"
+rm -f './celerybeat.pid' ; celery -A business_fetcher.celery_app beat -l INFO
+
 

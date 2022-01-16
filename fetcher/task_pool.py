@@ -1,7 +1,7 @@
 from business_fetcher.settings import JOBSPERTASK
 from fetcher.models import Business, Page
 # from fetcher.fetcher import Fetcher
-from fetcher.tasks import fetch_business, fetch_url
+from fetcher.micro_tasks import fetch_business, fetch_url
 
 
 class ActiveTasks:
@@ -9,7 +9,7 @@ class ActiveTasks:
         self.business = Business
         self.page = Page
 
-    def  get_tasks(self):
+    def get_tasks(self):
         tasks = list()
         reminded_jobs = JOBSPERTASK
         if not self.page.objects.first().finished:

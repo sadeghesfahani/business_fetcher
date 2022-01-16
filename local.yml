@@ -34,14 +34,31 @@ services:
   celery:
     build:
       context: .
-      dockerfile: Dockerfile
+      dockerfile: compose/celery/Dockerfile
     env_file:
       - ./.envs/.local/.django
     depends_on:
       - redis
     volumes:
       - ./:/django_app
+    ports: []
     container_name: celery
+
+#  beats:
+#    build:
+#      context: .
+#      dockerfile: compose/beats/Dockerfile
+#    env_file:
+#      - ./.envs/.local/.django
+#    depends_on:
+#      - redis
+#      - celery
+#      - postgres
+#    volumes:
+#      - ./:/django_app
+#    ports:
+#      - 5432:5432
+#    container_name: beats
 
 
 volumes:

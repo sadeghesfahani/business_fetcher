@@ -27,10 +27,10 @@ RUN set -xe; \
     groupadd -g ${PGID} django && \
     useradd -l -u ${PUID} -g django -m django && \
     usermod -p "*" django -s /bin/bash && \
-    apt-get install -yqq
+    apt-get install -yqq && apt-get install coreutils
 
 # copy django files
-COPY ./ /django_app
+COPY ../.. /django_app
 
 RUN pip install --upgrade pip
 RUN python3 -m pip install -r /django_app/requirements.txt
@@ -42,4 +42,4 @@ RUN chmod +x /django_app/entrypoint
 USER django
 
 WORKDIR /django_app
-ENTRYPOINT ["/django_app/entrypoint"]
+ENTRYPOINT ["/django_app/celery"]
