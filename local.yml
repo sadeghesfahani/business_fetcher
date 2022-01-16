@@ -3,6 +3,22 @@ version: '3.4'
 
 
 services:
+  django:
+    build:
+      context: .
+      dockerfile: compose/django/Dockerfile
+    env_file:
+      - ./.envs/.local/.django
+    depends_on:
+      - redis
+      - postgres
+    volumes:
+      - ./:/django_app
+    ports:
+      - "8000:8000"
+
+    container_name: fetcher
+
   postgres:
     build:
       context: .
@@ -14,7 +30,7 @@ services:
     env_file:
       - ./.envs/.local/.postgres
     ports:
-      - 5432:5432
+      - "5432:5432"
 
   pgadmin:
     image: dpage/pgadmin4
@@ -31,7 +47,7 @@ services:
     image: redis:5.0
     container_name: buisiness_redis
     ports:
-      - 6379:6379
+      - "6379:6379"
 
   celery:
     build:
@@ -43,24 +59,22 @@ services:
       - redis
     volumes:
       - ./:/django_app
-    ports: []
     container_name: celery
 
-#  beats:
-#    build:
-#      context: .
-#      dockerfile: compose/beats/Dockerfile
-#    env_file:
-#      - ./.envs/.local/.django
-#    depends_on:
-#      - redis
-#      - celery
-#      - postgres
-#    volumes:
-#      - ./:/django_app
-#    ports:
-#      - 5432:5432
-#    container_name: beats
+  beats:
+    build:
+      context: .
+      dockerfile: compose/beats/Dockerfile
+    env_file:
+      - ./.envs/.local/.django
+    depends_on:
+      - redis
+      - celery
+      - postgres
+    volumes:
+      - ./:/django_app
+
+    container_name: beats
 
 
 volumes:

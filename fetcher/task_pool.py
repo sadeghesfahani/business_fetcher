@@ -13,6 +13,8 @@ class ActiveTasks:
         tasks = list()
         reminded_jobs = JOBSPERTASK
         print("im here -----------------------------------------------------------")
+        page = self.page.objects.first()
+        print(page)
         if not self.page.objects.first().finished:
             tasks.append([fetch_url, None])
             reminded_jobs -= 1
