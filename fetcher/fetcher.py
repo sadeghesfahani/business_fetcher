@@ -108,6 +108,7 @@ class Fetcher(FetcherBase):
     def _analyze_company(self, html_handler, url):
         business = Business.objects.get(url=url)
         business.in_process = True
+        business.save()
         body = self._get_the_body(html_handler)
         header_data = body.contents[1].find("div", {"class": "card"}).find("div", {"class": "h2 text-primary mb-2"}).text
         name = header_data.split("(")[0].strip()

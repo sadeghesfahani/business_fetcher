@@ -8,7 +8,9 @@ from celery import shared_task
 
 @shared_task
 def run():
+
     tasks = ActiveTasks().get_tasks()
+    print(tasks)
     for task in tasks:
         if task[1] is None:
             task[0].delay()

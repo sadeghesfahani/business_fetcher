@@ -30,6 +30,8 @@ services:
   redis:
     image: redis:5.0
     container_name: buisiness_redis
+    ports:
+      - 6379:6379
 
   celery:
     build:
@@ -63,3 +65,4 @@ services:
 
 volumes:
   local_postgres_data: { }
+

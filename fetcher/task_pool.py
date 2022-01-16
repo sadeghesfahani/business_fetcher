@@ -12,10 +12,11 @@ class ActiveTasks:
     def get_tasks(self):
         tasks = list()
         reminded_jobs = JOBSPERTASK
+        print("im here -----------------------------------------------------------")
         if not self.page.objects.first().finished:
             tasks.append([fetch_url, None])
             reminded_jobs -= 1
-
+        print("alsooooooooooooooim here -----------------------------------------------------------")
         businesses = self.business.objects.filter(complete=False, in_process=False)[:reminded_jobs]
         for business in businesses:
             tasks.append([fetch_business, business.url])
