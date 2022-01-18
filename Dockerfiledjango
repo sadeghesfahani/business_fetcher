@@ -39,10 +39,12 @@ RUN python3 -m pip install -r /django_app/requirements.txt
 RUN sed -i 's/\r$//g' /django_app/entrypoint
 RUN chmod +x /django_app/entrypoint
 
-USER django
-
 RUN sed -i 's/\r$//g' /django_app/django
 RUN chmod +x /django_app/django
+
+USER django
+
+
 
 WORKDIR /django_app
 ENTRYPOINT ["/django_app/django"]
