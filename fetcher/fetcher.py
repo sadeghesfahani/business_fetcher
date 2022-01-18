@@ -142,10 +142,10 @@ class Fetcher(FetcherBase):
         tax_information = BeautifulSoup(self._fetch_json(self._base_url + "/eng/company/" + registery_code + "/emta_tax_debt_json")['data']['html'],
                                         "html.parser")
         vat_number = self._extract_info(tax_information, "div", "VAT number").replace("\xa0", " ")
-        vat_period = self._extract_info(tax_information, "div", "VAT period").replace("\xa0", " ")
-        state_taxes = self._extract_info(tax_information, "div", "State taxes").replace("\xa0", " ")
-        taxes_on_workforce = self._extract_info(tax_information, "div", "Taxes on workforce").replace("\xa0", " ")
-        taxable_turnover = self._extract_info(tax_information, "div", "Taxable turnover").replace("\xa0", " ")
+        vat_period = self._extract_info(tax_information, "div", "VAT period").replace("\xa0", " ").replace("– ..", "")
+        state_taxes = self._extract_info(tax_information, "div", "State taxes").replace("\xa0", " ").replace(" EUR", "")
+        taxes_on_workforce = self._extract_info(tax_information, "div", "Taxes on workforce").replace("\xa0", " ").replace(" EUR", "")
+        taxable_turnover = self._extract_info(tax_information, "div", "Taxable turnover").replace("\xa0", " ").replace(" EUR", "")
         number_of_employees = self._extract_info(tax_information, "div", "Number of employees").replace("\xa0", " ")
 
         business.vat_number = vat_number

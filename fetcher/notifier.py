@@ -1,10 +1,11 @@
+from django.conf.global_settings import EMAIL_HOST_USER
 from django.core import mail
 
 class Notifier:
 
     def __init__(self):
-        self.sender = "betatool@alcatech.de"
-        self.send_to = "betatool@alcatech.de"
+        self.sender = EMAIL_HOST_USER
+        self.send_to = EMAIL_HOST_USER
 
     def notify(self):
         with mail.get_connection() as connection:

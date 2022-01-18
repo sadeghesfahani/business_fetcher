@@ -1,5 +1,5 @@
 import threading
-from accounts.notifier import Notifier
+from .notifier import Notifier
 
 
 class Email(threading.Thread):
