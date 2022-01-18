@@ -31,8 +31,6 @@ class FetcherBase:
 
     def _fetch_page(self, url):
         proxy = Proxy().get()
-        print("proxy ==============================> ", proxy)
-        print("url ==============================> ", url)
         if proxy:
             proxy_dict = {
                 "http": proxy,
@@ -55,6 +53,21 @@ class FetcherBase:
         else:
             response = requests.get(url)
         return response.json()
+
+    def _fetch_page_for_url(self, url):
+        proxy = Proxy().get()
+        if proxy:
+            proxy_dict = {
+                "http": proxy,
+                "https": proxy,
+            }
+            response = requests.get(url, proxies=proxy_dict)
+        else:
+            response = requests.get(url)
+        redirected = False
+        if response.history == 303:
+            redirected = True
+        return response.text, redirected
 
     @staticmethod
     def _purge_html_page(html_handler_object):

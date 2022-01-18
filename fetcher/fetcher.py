@@ -1,11 +1,12 @@
 import json
 import re
 
+from fetcher.email import Email
 from fetcher.fetcher_base import FetcherBase
 from bs4 import BeautifulSoup
 import requests
 
-from fetcher.models import Page, Business, Person, Activity
+from fetcher.models import Page, Business, Person, Activity, URL
 
 
 class Fetcher(FetcherBase):
@@ -36,10 +37,19 @@ class Fetcher(FetcherBase):
 
     def fetch_business_url(self):
         page = Page.objects.all().first()
-        next_url = f"https://ariregister.rik.ee/eng/company_search_result/d82c2f2?name_or_code=%2Aa%2Aa%2Aa&page={page.page}"
+        url_object = URL.objects.all().first()
+        next_url = f"{url_object.url}&page={page.page}"
         page.page += 1
         page.save()
         self.all_links = list()
+        page_content, failed = self._fetch_page_for_url(next_url)
+        if failed:
+            url_object.failed = True
+            url_object.save()
+            # send email
+            Email().start()
+            page.page -= 1
+            page.save()
         html_handler = BeautifulSoup(self._fetch_page(next_url), 'html.parser')
         html_handler = self._purge_html_page(html_handler)
         links = self._extract_links(html_handler)
@@ -63,9 +73,8 @@ class Fetcher(FetcherBase):
                 # business already exists in database
                 pass
         if next_url is None:
-            page_object = Page.objects.all().first()
-            page_object.finished = True
-            page_object.save()
+            page.finished = True
+            page.save()
 
     def fetch_business_urls(self):
         page = Page.objects.all().first()

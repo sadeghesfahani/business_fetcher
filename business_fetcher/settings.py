@@ -193,3 +193,14 @@ CELERY_BEAT_SCHEDULER = "django_celery_beat.schedulers:DatabaseScheduler"
 CELERY_TASK_EAGER_PROPAGATES = True
 
 # CELERY_IMPORTS = ('fetcher.tasks',)
+
+
+EMAIL_HOST = ''
+EMAIL_PORT = 587
+EMAIL_HOST_USER = ''
+EMAIL_HOST_PASSWORD = ''
+EMAIL_USE_TLS = True
+EMAIL_USE_SSL = False
+EMAIL_TIMEOUT = None
+EMAIL_SSL_KEYFILE = None
+EMAIL_SSL_CERTFILE = None

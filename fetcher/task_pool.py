@@ -1,5 +1,5 @@
 from business_fetcher.settings import JOBSPERTASK
-from fetcher.models import Business, Page
+from fetcher.models import Business, Page, URL
 # from fetcher.fetcher import Fetcher
 from fetcher.micro_tasks import fetch_business, fetch_url
 
@@ -12,13 +12,11 @@ class ActiveTasks:
     def get_tasks(self):
         tasks = list()
         reminded_jobs = JOBSPERTASK
-        print("im here -----------------------------------------------------------")
-        page = self.page.objects.first()
-        print(page)
-        if not self.page.objects.first().finished:
+        page = self.page.objects.all().first()
+        url_object = URL.objects.all().first()
+        if not page.finished and not url_object.failed:
             tasks.append([fetch_url, None])
             reminded_jobs -= 1
-        print("alsooooooooooooooim here -----------------------------------------------------------")
         businesses = self.business.objects.filter(complete=False, in_process=False)[:reminded_jobs]
         for business in businesses:
             tasks.append([fetch_business, business.url])

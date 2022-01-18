@@ -46,3 +46,8 @@ class Page(models.Model):
 class Proxy(models.Model):
     proxy = models.CharField(max_length=1200)
     last_used_date = models.DateTimeField(auto_now_add=True)
+
+
+class URL(models.Model):
+    url = models.CharField(max_length=2000)
+    failed = models.BooleanField(default=False)
