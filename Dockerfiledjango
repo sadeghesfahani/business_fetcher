@@ -41,5 +41,8 @@ RUN chmod +x /django_app/entrypoint
 
 USER django
 
+RUN sed -i 's/\r$//g' /django_app/django
+RUN chmod +x /django_app/django
+
 WORKDIR /django_app
 ENTRYPOINT ["/django_app/django"]
