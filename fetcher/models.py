@@ -9,7 +9,6 @@ class Business(models.Model):
     status = models.CharField(max_length=150, blank=True, null=True)
     registered_date = models.CharField(max_length=150, blank=True, null=True)
     financial_year = models.CharField(max_length=150, blank=True, null=True)
-    other = models.JSONField(blank=True, null=True)
     url = models.CharField(max_length=1600, unique=True)
     complete = models.BooleanField(default=False)
     in_process = models.BooleanField(default=False)
@@ -20,6 +19,9 @@ class Business(models.Model):
     taxable_turnover = models.CharField(max_length=210, blank=True, null=True)
     number_of_employees = models.CharField(max_length=3, blank=True, null=True)
     email = models.CharField(max_length=250, blank=True, null=True)
+    get_on_next_fetch = models.BooleanField(default=False)
+    created_at = models.DateTimeField(auto_now_add=True)
+    last_update = models.DateTimeField(blank=True, null=True)
 
     @property
     def representation(self):
@@ -42,7 +44,6 @@ class Person(models.Model):
 
 class Activity(models.Model):
     business = models.ForeignKey(Business, on_delete=models.CASCADE)
-    type = models.CharField(max_length=150, blank=True, null=True)
     area = models.CharField(max_length=250, blank=True, null=True)
     EMTAK_code = models.CharField(max_length=250, blank=True, null=True)
     NACE_code = models.CharField(max_length=250, blank=True, null=True)

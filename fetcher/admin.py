@@ -17,6 +17,10 @@ def undo_completed(modeladmin, request, queryset):
 def in_process(modeladmin, request, queryset):
     queryset.update(in_process=False)
 
+@admin.action(description="get data on next fetch")
+def fetch(modeladmin, request, queryset):
+    queryset.update(get_on_next_fetch=True)
+
 
 class PersonInline(admin.TabularInline):
     model = Person
@@ -27,11 +31,11 @@ class ActivityInline(admin.TabularInline):
 
 
 class BusinessAdmin(admin.ModelAdmin):
-    list_filter = ('complete', "in_process", 'status')
+    list_filter = ('complete', "in_process", 'status','get_on_next_fetch')
     list_display = ('name', "complete", 'url')
     search_fields = ['name', 'url']
     inlines = [PersonInline, ActivityInline]
-    actions = [undo_completed,in_process]
+    actions = [undo_completed,in_process,fetch]
 
 
 class PersonAdmin(admin.ModelAdmin):

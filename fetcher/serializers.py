@@ -5,7 +5,7 @@ from .models import Business, Activity, Person
 class ActivitySerializer(serializers.ModelSerializer):
     class Meta:
         model = Activity
-        exclude = ['id','business','type']
+        exclude = ['id','business']
 
 
 class PersonSerializer(serializers.ModelSerializer):
@@ -20,4 +20,4 @@ class BusinessSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Business
-        exclude = ['complete',"other",'in_process','id']
+        exclude = ['complete','in_process','id','get_on_next_fetch']

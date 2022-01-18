@@ -17,7 +17,10 @@ class ActiveTasks:
         if not page.finished and not url_object.failed:
             tasks.append([fetch_url, None])
             reminded_jobs -= 1
-        businesses = self.business.objects.filter(complete=False, in_process=False)[:reminded_jobs]
+        businesses = list(self.business.objects.filter(get_on_next_fetch=True))
+        reminded_jobs -= len(businesses)
+        if reminded_jobs > 0:
+            businesses += self.business.objects.filter(complete=False, in_process=False)[:reminded_jobs]
         for business in businesses:
             tasks.append([fetch_business, business.url])
         return tasks

@@ -1,7 +1,7 @@
 import re
 
 import requests
-
+from requests.auth import HTTPBasicAuth
 from fetcher.porxy import Proxy
 
 
@@ -36,7 +36,7 @@ class FetcherBase:
                 "http": proxy,
                 "https": proxy,
             }
-            response = requests.get(url, proxies=proxy_dict)
+            response = requests.get(url, proxies=proxy_dict,auth = HTTPBasicAuth('alimzd', 'AW68wgzySlH00T4v'))
         else:
             response = requests.get(url)
         return response.text
@@ -49,7 +49,7 @@ class FetcherBase:
                 "http": proxy,
                 "https": proxy,
             }
-            response = requests.get(url, proxies=proxy_dict)
+            response = requests.get(url, proxies=proxy_dict, auth = HTTPBasicAuth('alimzd', 'AW68wgzySlH00T4v'))
         else:
             response = requests.get(url)
         return response.json()
@@ -61,7 +61,8 @@ class FetcherBase:
                 "http": proxy,
                 "https": proxy,
             }
-            response = requests.get(url, proxies=proxy_dict)
+
+            response = requests.get(url, proxies=proxy_dict,auth = HTTPBasicAuth('alimzd', 'AW68wgzySlH00T4v'))
         else:
             response = requests.get(url)
         redirected = False

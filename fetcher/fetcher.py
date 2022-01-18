@@ -1,6 +1,8 @@
 import json
 import re
 
+from django.utils import timezone
+
 from fetcher.email import Email
 from fetcher.fetcher_base import FetcherBase
 from bs4 import BeautifulSoup
@@ -68,7 +70,7 @@ class Fetcher(FetcherBase):
             url_list = "/".join(url_list)
             business_url = self._base_url + "/" + url_list
             try:
-                Business.objects.create(url=business_url)
+                Business.objects.create(url=business_url, name=company_name.replace('-', " "))
             except:
                 # business already exists in database
                 pass
@@ -199,6 +201,8 @@ class Fetcher(FetcherBase):
             pass
         business.in_process = False
         business.complete = True
+        business.last_update = timezone.now()
+        business.get_on_next_fetch = False
         business.save()
         return True
 

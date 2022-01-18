@@ -13,12 +13,16 @@ class BusinessFetcher(viewsets.ViewSet):
 
     def jsonify(self, request):
         status = request.GET.get('status')
-        if status is not None:
-            query_set = Business.objects.filter(status=status)
+        name = request.GET.get('name')
+        if name is not None:
+            query_set = Business.objects.filter(name__icontains=name)
         else:
-            query_set = Business.objects.all()[:10]
+            if status is not None:
+                query_set = Business.objects.filter(status=status, complete=True)
+            else:
+                query_set = Business.objects.filter(complete=True).exclude(status="Deleted")
 
-        return Response(BusinessSerializer(query_set,many=True).data)
+        return Response(BusinessSerializer(query_set, many=True).data)
     # def fetch(self, request):
     #     return Response({"hi": "hi"})
     #

@@ -15,3 +15,5 @@ POSTGRES_DB=business_fetcher
 POSTGRES_USER=admin
 POSTGRES_PASSWORD=admin
 
+
+

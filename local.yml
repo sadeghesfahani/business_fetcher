@@ -17,6 +17,7 @@ services:
     ports:
       - "8000:8000"
 
+
     container_name: fetcher
 
   postgres:
@@ -60,6 +61,10 @@ services:
     volumes:
       - ./:/django_app
     container_name: celery
+    ports:
+      - "31112:31112"
+      - "31111:31111"
+      - "443:443"
 
   beats:
     build:
