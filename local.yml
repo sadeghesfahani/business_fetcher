@@ -10,8 +10,7 @@ services:
     env_file:
       - ./.envs/.local/.django
     command:
-      - bash -c "python3 manage.py runserver 0.0.0.0:8000"
-      - python3 manage.py runserver 0.0.0.0:8000
+      - dir
     depends_on:
       - redis
       - postgres
