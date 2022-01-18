@@ -21,12 +21,23 @@ class Business(models.Model):
     number_of_employees = models.CharField(max_length=3, blank=True, null=True)
     email = models.CharField(max_length=250, blank=True, null=True)
 
+    @property
+    def representation(self):
+        return Person.objects.filter(business=self)
+
+    @property
+    def activity(self):
+        return Activity.objects.filter(business=self)
+
 
 class Person(models.Model):
     business = models.ForeignKey(Business, on_delete=models.CASCADE)
     name = models.CharField(max_length=250, blank=True, null=True)
     role = models.CharField(max_length=250, blank=True, null=True)
     person_id = models.CharField(max_length=120, blank=True, null=True)
+
+    def __str__(self):
+        return f"{self.name} -- {self.role} -- {self.person_id}"
 
 
 class Activity(models.Model):
@@ -37,10 +48,16 @@ class Activity(models.Model):
     NACE_code = models.CharField(max_length=250, blank=True, null=True)
     source = models.CharField(max_length=250, blank=True, null=True)
 
+    def __str__(self):
+        return self.area
+
 
 class Page(models.Model):
     page = models.SmallIntegerField()
     finished = models.BooleanField(default=False)
+
+    def __str__(self):
+        return f"{self.page} --- Status: {'deactive' if self.finished else 'active'}"
 
 
 class Proxy(models.Model):
@@ -51,3 +68,6 @@ class Proxy(models.Model):
 class URL(models.Model):
     url = models.CharField(max_length=2000)
     failed = models.BooleanField(default=False)
+
+    def __str__(self):
+        return f"Status: {'deactive' if self.failed else 'active'}"
