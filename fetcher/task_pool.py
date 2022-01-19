@@ -1,4 +1,4 @@
-from business_fetcher.settings import JOBSPERTASK
+from DJANGO_PROJECT.settings import JOBSPERTASK
 from fetcher.models import Business, Page, URL
 # from fetcher.fetcher import Fetcher
 from fetcher.micro_tasks import fetch_business, fetch_url

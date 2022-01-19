@@ -1,5 +1,5 @@
 """
-WSGI config for business_fetcher project.
+WSGI config for DJANGO_PROJECT project.
 
 It exposes the WSGI callable as a module-level variable named ``application``.
 
@@ -11,6 +11,6 @@ import os
 
 from django.core.wsgi import get_wsgi_application
 
-os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'business_fetcher.settings')
+os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'DJANGO_PROJECT.settings')
 
 application = get_wsgi_application()

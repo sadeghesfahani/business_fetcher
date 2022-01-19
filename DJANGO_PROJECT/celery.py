@@ -5,9 +5,9 @@ from celery import Celery
 # set the default Django settings module for the 'celery' program.
 from django.conf import settings
 
-os.environ.setdefault("DJANGO_SETTINGS_MODULE", "business_fetcher.settings")
+os.environ.setdefault("DJANGO_SETTINGS_MODULE", "DJANGO_PROJECT.settings")
 django.setup()
-app = Celery("business_fetcher")
+app = Celery("DJANGO_PROJECT")
 
 # Using a string here means the worker doesn't have to serialize
 # the configuration object to child processes.

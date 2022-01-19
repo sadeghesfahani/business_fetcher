@@ -1,0 +1,60 @@
+version: '3.7'
+services:
+  rikfetcherapp:
+    restart: always
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "9999:8000"
+    links:
+      - postgres:postgres
+      - redis:redis
+    env_file:
+      - ./environments/production.env
+    command: gunicorn --log-level debug --bind 0.0.0.0:8000 DJANGO_PROJECT.wsgi
+    depends_on:
+      - redis
+      - postgres
+    volumes:
+      - file-data:/opt/services/app/file_access
+
+  rikfetcherappcelery:
+    restart: always
+    build:
+      context: .
+      dockerfile: Dockerfile
+    command: "celery -A DJANGO_PROJECT worker -E -B --loglevel=INFO --concurrency=8"
+    links:
+      - postgres:postgres
+      - redis:redis
+    env_file:
+      - ./environments/production.env
+    depends_on:
+      - rikfetcherapp
+
+  redis:
+    image: redis:6
+    restart: always
+    command: ["redis-server", "--appendonly", "yes"]
+    hostname: redis
+    volumes:
+      - redis-data:/data
+
+  postgres:
+    image: postgres:13
+    restart: always
+    environment:
+      - POSTGRES_USER=rikfetcher
+      - POSTGRES_PASSWORD=rikfetcherddDDaA
+      - POSTGRES_DB=rikfetcher
+    volumes:
+      - postgres:/var/lib/postgresql/data
+
+volumes:
+  redis-data:
+  postgres:
+  file-data:
+  static_volume:
+  media_volume:
+

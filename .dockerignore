@@ -1,0 +1,13 @@
+venv
+env
+local.env
+.git
+.gitignore
+DJANGO_PROJECT/settings/local_settings.py
+docker-compose.yml
+dockerfile
+.dockerignore
+__pycache__
+.idea
+.vscode
+.env

@@ -1,6 +1,6 @@
 import django
-from business_fetcher import celery_app
-from business_fetcher.celery_app import app
+from DJANGO_PROJECT import celery_app
+from DJANGO_PROJECT.celery import app
 from .fetcher import Fetcher
 from .models import Page
 from .task_pool import ActiveTasks

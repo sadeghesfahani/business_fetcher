@@ -1,4 +1,4 @@
-from business_fetcher import celery_app
+from DJANGO_PROJECT import celery_app
 from fetcher.fetcher import Fetcher
 
 
