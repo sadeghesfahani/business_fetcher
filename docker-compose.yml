@@ -18,6 +18,7 @@ services:
       - postgres
     volumes:
       - file-data:/opt/services/app/file_access
+      - ./:/opt/services/app/src
 
   rikfetcherappcelery:
     restart: always
@@ -32,6 +33,8 @@ services:
       - ./environments/production.env
     depends_on:
       - rikfetcherapp
+    volumes:
+      - ./:/opt/services/app/src
 
   redis:
     image: redis:6
