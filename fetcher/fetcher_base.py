@@ -36,7 +36,10 @@ class FetcherBase:
                 "http": proxy,
                 "https": proxy,
             }
-            response = requests.get(url, proxies=proxy_dict)
+            try:
+                response = requests.get(url, proxies=proxy_dict)
+            except:
+                response = requests.get(url)
         else:
             response = requests.get(url)
         return response.text
@@ -49,7 +52,10 @@ class FetcherBase:
                 "http": proxy,
                 "https": proxy,
             }
-            response = requests.get(url, proxies=proxy_dict)
+            try:
+                response = requests.get(url, proxies=proxy_dict)
+            except:
+                response = requests.get(url)
         else:
             response = requests.get(url)
         return response.json()
@@ -61,8 +67,10 @@ class FetcherBase:
                 "http": proxy,
                 "https": proxy,
             }
-
-            response = requests.get(url, proxies=proxy_dict)
+            try:
+                response = requests.get(url, proxies=proxy_dict)
+            except:
+                response = requests.get(url)
         else:
             response = requests.get(url)
         redirected = False
