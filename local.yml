@@ -9,9 +9,6 @@ services:
       dockerfile: Dockerfiledjango
     env_file:
       - ./.envs/.local/.django
-    command:
-      - /usr/bin/python manage.py runserver
-      - dir
     depends_on:
       - redis
       - postgres
