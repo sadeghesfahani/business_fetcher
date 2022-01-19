@@ -36,7 +36,7 @@ class FetcherBase:
                 "http": proxy,
                 "https": proxy,
             }
-            response = requests.get(url, proxies=proxy_dict,auth = HTTPBasicAuth('alimzd', 'AW68wgzySlH00T4v'))
+            response = requests.get(url, proxies=proxy_dict)
         else:
             response = requests.get(url)
         return response.text
@@ -49,7 +49,7 @@ class FetcherBase:
                 "http": proxy,
                 "https": proxy,
             }
-            response = requests.get(url, proxies=proxy_dict, auth = HTTPBasicAuth('alimzd', 'AW68wgzySlH00T4v'))
+            response = requests.get(url, proxies=proxy_dict)
         else:
             response = requests.get(url)
         return response.json()
@@ -62,7 +62,7 @@ class FetcherBase:
                 "https": proxy,
             }
 
-            response = requests.get(url, proxies=proxy_dict,auth = HTTPBasicAuth('alimzd', 'AW68wgzySlH00T4v'))
+            response = requests.get(url, proxies=proxy_dict)
         else:
             response = requests.get(url)
         redirected = False
