@@ -10,7 +10,7 @@ services:
     env_file:
       - ./.envs/.local/.django
     command:
-      - echo $PATH
+      - /usr/bin/python manage.py runserver
       - dir
     depends_on:
       - redis
