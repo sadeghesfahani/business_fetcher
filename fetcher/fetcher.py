@@ -56,6 +56,7 @@ class Fetcher(FetcherBase):
             self.get_new_address()
             page.page -= 1
             page.save()
+            self.fetch_business_url()
             page_content, failed = self._fetch_page_for_url(next_url)
             # url_object.failed = True
             # url_object.save()
