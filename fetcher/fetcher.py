@@ -230,3 +230,4 @@ class Fetcher(FetcherBase):
         time.sleep(3)
         url.url = driver.current_url
         url.save()
+        driver.close()
