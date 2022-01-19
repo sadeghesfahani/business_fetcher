@@ -1,6 +1,13 @@
 import json
 import re
+import time
 
+from selenium import webdriver
+from selenium.webdriver.common.by import By
+from selenium.webdriver.support import expected_conditions as EC
+from selenium.webdriver.support.ui import WebDriverWait
+from webdriver_manager.chrome import ChromeDriverManager
+from selenium.webdriver.common.keys import Keys
 from django.utils import timezone
 
 from fetcher.email import Email
@@ -46,12 +53,16 @@ class Fetcher(FetcherBase):
         self.all_links = list()
         page_content, failed = self._fetch_page_for_url(next_url)
         if failed:
-            url_object.failed = True
-            url_object.save()
-            # send email
-            Email().start()
+            self.get_new_address()
             page.page -= 1
             page.save()
+            page_content, failed = self._fetch_page_for_url(next_url)
+            # url_object.failed = True
+            # url_object.save()
+            # send email
+            # Email().start()
+            # page.page -= 1
+            # page.save()
         html_handler = BeautifulSoup(self._fetch_page(next_url), 'html.parser')
         html_handler = self._purge_html_page(html_handler)
         links = self._extract_links(html_handler)
@@ -208,3 +219,13 @@ class Fetcher(FetcherBase):
 
     def fetch_by_name(self, name):
         pass
+
+    def get_new_address(self):
+        url = URL.objects.all().first()
+        driver = webdriver.Chrome(ChromeDriverManager().install())
+        driver.get("https://ariregister.rik.ee/eng")
+        driver.find_element_by_id("company_search").send_keys("*a*a*a*")
+        driver.find_element_by_id("company_search").send_keys(Keys.ENTER)
+        time.sleep(3)
+        url.url = driver.current_url
+        url.save()
