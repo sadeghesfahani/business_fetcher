@@ -18,9 +18,16 @@ class ActiveTasks:
             tasks.append([fetch_url, None])
             reminded_jobs -= 1
         businesses = list(self.business.objects.filter(get_on_next_fetch=True))
+        for business in businesses:
+            business.get_on_next_fetch = False
+            business.in_process = True
+            business.save()
         reminded_jobs -= len(businesses)
         if reminded_jobs > 0:
             businesses += self.business.objects.filter(complete=False, in_process=False)[:reminded_jobs]
+
         for business in businesses:
+            business.in_process = True
+            business.save()
             tasks.append([fetch_business, business.url])
         return tasks
