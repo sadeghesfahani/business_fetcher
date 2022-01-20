@@ -212,11 +212,13 @@ class Fetcher(FetcherBase):
             business.email = email_list[0]
         except:
             pass
+
         business.in_process = False
         business.complete = True
         business.last_update = timezone.now()
         business.get_on_next_fetch = False
         business.save()
+        print("all done", business.name, business.complete)
         return True
 
     def fetch_by_name(self, name):
