@@ -12,7 +12,7 @@ services:
       - redis:redis
     env_file:
       - ./environments/production.env
-    command: gunicorn --log-level debug --workers=5 --threads=2 --bind 0.0.0.0:8000 DJANGO_PROJECT.wsgi
+    command: gunicorn --log-level debug --workers=10 --threads=5 --bind 0.0.0.0:8000 DJANGO_PROJECT.wsgi
     depends_on:
       - redis
       - postgres
