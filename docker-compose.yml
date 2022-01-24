@@ -59,7 +59,7 @@ services:
   redis:
     image: redis:6
     restart: always
-    command: ["redis-server", "--appendonly", "yes"]
+    command: ["redis-server"]
     hostname: redis
     volumes:
       - redis-data:/data
