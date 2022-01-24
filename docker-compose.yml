@@ -61,8 +61,8 @@ services:
     restart: always
     command: ["redis-server", "--appendonly", "yes"]
     hostname: redis
-#    volumes:
-#      - redis-data:/data
+    volumes:
+      - redis-data:/data
 
   postgres:
     image: postgres:13
