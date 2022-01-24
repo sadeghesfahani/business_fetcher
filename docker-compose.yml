@@ -25,7 +25,7 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-    command: "celery -A DJANGO_PROJECT worker -E -B --loglevel=INFO --concurrency=8"
+    command: "celery -A DJANGO_PROJECT worker -E -B --loglevel=INFO --concurrency=30"
     links:
       - postgres:postgres
       - redis:redis
