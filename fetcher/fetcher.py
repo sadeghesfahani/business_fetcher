@@ -46,6 +46,9 @@ class Fetcher(FetcherBase):
 
     def fetch_business_url(self):
         page = Page.objects.all().first()
+        print("fetching page ", page.page)
+        if page.finished:
+            return None
         url_object = URL.objects.all().first()
         next_url = f"{url_object.url}&page={page.page}"
         page.page += 1
@@ -69,19 +72,23 @@ class Fetcher(FetcherBase):
         html_handler = self._purge_html_page(html_handler)
         links = self._extract_links(html_handler)
         self.all_links += links['company']
-        next_url = self._base_url + links['next']['href']
+        if links['next'] is None:
+            next_url = None
+        else:
+            next_url = self._base_url + links['next']['href']
         for link in links['company']:
 
             try:
                 company_name = link['href'].split("/")[-1].split("?")[0]
+                url_list = link['href'].split("/")[1:-1]
+                url_list.append(company_name)
+                url_list = "/".join(url_list)
+                business_url = self._base_url + "/" + url_list
             except:
                 # celery beat off
                 pass
 
-            url_list = link['href'].split("/")[1:-1]
-            url_list.append(company_name)
-            url_list = "/".join(url_list)
-            business_url = self._base_url + "/" + url_list
+
             try:
                 Business.objects.create(url=business_url, name=company_name.replace('-', " "))
             except:
