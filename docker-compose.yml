@@ -42,7 +42,7 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-    command: "celery flower --app=DJANGO_PROJECT.celery --broker=redis://redis:6379/0 --address=0.0.0.0 --persistent=True --basic_auth=hhhhhh:hhhhh@123 --db=/opt/services/app/celery-flower.db"
+    command: "celery flower --app=DJANGO_PROJECT.celery --broker=redis://redis:6379/0 --address=0.0.0.0  --basic_auth=hhhhhh:hhhhh@123 "
     links:
       - postgres:postgres
       - redis:redis
