@@ -25,7 +25,8 @@ class FetcherBase:
             if href[:13] == "/eng/company/":
                 links['company'].append(link)
             else:
-                if link.text == "Next":
+
+                if "Next" in link.text:
                     links['next'] = link
         return links
 

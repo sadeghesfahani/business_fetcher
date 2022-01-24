@@ -61,21 +61,14 @@ class Fetcher(FetcherBase):
             page.save()
             self.fetch_business_url()
             return None
-            # page_content, failed = self._fetch_page_for_url(next_url)
-            # url_object.failed = True
-            # url_object.save()
-            # send email
-            # Email().start()
-            # page.page -= 1
-            # page.save()
+
         html_handler = BeautifulSoup(self._fetch_page(next_url), 'html.parser')
         html_handler = self._purge_html_page(html_handler)
         links = self._extract_links(html_handler)
         self.all_links += links['company']
         if links['next'] is None:
             next_url = None
-        else:
-            next_url = self._base_url + links['next']['href']
+
         for link in links['company']:
 
             try:
@@ -94,14 +87,12 @@ class Fetcher(FetcherBase):
             except:
                 # business already exists in database
                 pass
-        if next_url is None:
-            print(f"page {page.page} does not have next url and the links are", links)
-            # page.finished = True
-            # page.save()
+
 
     def fetch_business_urls(self):
         page = Page.objects.all().first()
-        next_url = f"https://ariregister.rik.ee/eng/company_search_result/eca033f?name_or_code=%2Aa%2Aa%2Aa&page={page.page}"
+        url_object = URL.objects.all().first()
+        next_url = f"{url_object.url}&page={page.page}"
         print(next_url)
         companies = list()
         self.all_links = list()
@@ -109,8 +100,10 @@ class Fetcher(FetcherBase):
         html_handler = self._purge_html_page(html_handler)
         links = self._extract_links(html_handler)
         self.all_links += links['company']
-        next_url = self._base_url + links['next']['href']
-        print(next_url)
+        if links['next'] is None:
+            next_url = None
+        else:
+            next_url = self._base_url + links['next']['href']
         for link in links['company']:
 
             try:
