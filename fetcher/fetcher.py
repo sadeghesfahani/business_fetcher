@@ -68,7 +68,7 @@ class Fetcher(FetcherBase):
         self.all_links += links['company']
         if links['next'] is None:
             next_url = None
-
+            print("next page does not found")
         for link in links['company']:
 
             try:
