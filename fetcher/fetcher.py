@@ -95,8 +95,9 @@ class Fetcher(FetcherBase):
                 # business already exists in database
                 pass
         if next_url is None:
-            page.finished = True
-            page.save()
+            print(f"page {page.page} does not have next url and the links are", links)
+            # page.finished = True
+            # page.save()
 
     def fetch_business_urls(self):
         page = Page.objects.all().first()
