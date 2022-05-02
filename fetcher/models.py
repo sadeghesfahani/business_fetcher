@@ -54,7 +54,7 @@ class Activity(models.Model):
 
 
 class Page(models.Model):
-    page = models.SmallIntegerField()
+    page = models.IntegerField()
     finished = models.BooleanField(default=False)
 
     def __str__(self):
