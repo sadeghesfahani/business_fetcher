@@ -31,6 +31,7 @@ class FetcherBase:
         return links
 
     def _fetch_page(self, url):
+        headers = {"Host": "ariregister.rik.ee"}
         proxy = Proxy().get()
         if proxy:
             proxy_dict = {
@@ -38,11 +39,11 @@ class FetcherBase:
                 "https": proxy,
             }
             try:
-                response = requests.get(url, proxies=proxy_dict)
+                response = requests.get(url, headers=headers, proxies=proxy_dict)
             except:
-                response = requests.get(url)
+                response = requests.get(url, headers=headers)
         else:
-            response = requests.get(url)
+            response = requests.get(url, headers=headers)
         return response.text
 
     def _fetch_json(self, url):
