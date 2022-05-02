@@ -43,5 +43,5 @@ python manage.py createsuperuser
     - password: hhhhh@123
 
 #### To view admin
-    go to localhost:9999/admin
+    go to http://37.152.181.31/admin
     go to http://ip:9999/admin
