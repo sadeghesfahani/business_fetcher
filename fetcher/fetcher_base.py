@@ -42,6 +42,8 @@ class FetcherBase:
             try:
                 print(proxy_dict)
                 response = requests.get(url, headers=headers, proxies=proxy_dict)
+                print(response)
+                print(response.text)
             except:
                 response = requests.get(url, headers=headers)
         else:
