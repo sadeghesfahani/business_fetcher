@@ -33,12 +33,14 @@ class FetcherBase:
     def _fetch_page(self, url):
         headers = {"Host": "ariregister.rik.ee"}
         proxy = Proxy().get()
+        print(proxy)
         if proxy:
             proxy_dict = {
                 "http": proxy,
                 "https": proxy,
             }
             try:
+                print(proxy_dict)
                 response = requests.get(url, headers=headers, proxies=proxy_dict)
             except:
                 response = requests.get(url, headers=headers)
