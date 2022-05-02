@@ -39,13 +39,13 @@ class FetcherBase:
                 "http": proxy,
                 "https": proxy,
             }
-            try:
-                print(proxy_dict)
-                response = requests.get(url, headers=headers, proxies=proxy_dict)
-                print(response)
-                print(response.text)
-            except:
-                response = requests.get(url, headers=headers)
+            # try:
+            print(proxy_dict)
+            response = requests.get(url, headers=headers, proxies=proxy_dict)
+            print(response)
+            print(response.text)
+            # except:
+            #     response = requests.get(url, headers=headers)
         else:
             response = requests.get(url, headers=headers)
         return response.text
