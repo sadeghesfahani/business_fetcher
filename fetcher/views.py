@@ -22,7 +22,7 @@ class BusinessFetcher(viewsets.ViewSet):
             else:
                 query_set = Business.objects.filter(complete=True).exclude(status="Deleted")
 
-        return Response(BusinessSerializer(query_set, many=True).data)
+        return Response(BusinessSerializer(query_set, many=True, read_only=True).data)
     # def fetch(self, request):
     #     return Response({"hi": "hi"})
     #
